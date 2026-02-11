@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kephotec - Cinematic Landing</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- LEAFLET CSS (TAMBAHAN BARU) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+  />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('images/background_car.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: -1;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 20px 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+    }
+
+    header nav a {
+      color: white;
+      margin: 0 25px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .hero {
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+
+    .hero-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      animation: fadeIn 2s ease;
+    }
+
+    .hero-text h1 {
+      font-size: 80px;
+      margin: 0;
+      letter-spacing: 3px;
+      color: #e00000;
+    }
+
+    .hero-text p {
+      font-size: 22px;
+      opacity: 0.9;
+    }
+
+    .cta-button {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 15px 35px;
+      background: #e00000;
+      color: white;
+      border-radius: 10px;
+      font-size: 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -40%); }
+      to   { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    .about, .gallery, .contact {
+      padding: 120px 50px;
+      background: rgba(0,0,0,0.45);
+      text-align: center;
+    }
+
+    .features-list {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      background: rgba(255,0,0,0.08);
+      padding: 18px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,0,0,0.3);
+      backdrop-filter: blur(6px);
+    }
+
+    .feature-item i {
+      font-size: 26px;
+      color: #e00000;
+      margin-right: 15px;
+    }
+
+    .feature-item span {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .about h2,
+    .gallery h2,
+    .contact h2 {
+      font-size: 36px;
+      color: #e00000;
+      margin-bottom: 20px;
+    }
+
+    .about p {
+      max-width: 800px;
+      margin: auto;
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    .about img {
+      margin-top: 20px;
+      width: 400px;
+      border-radius: 15px;
+      filter: drop-shadow(0 0 15px #e00000);
+    }
+
+    .cinematic-section {
+      padding: 60px 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .cinematic-section img {
+      width: 500px;
+      border-radius: 15px;
+      filter: drop-shadow(0 0 20px #e00000);
+    }
+
+    .gallery-row {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      margin-top: 40px;
+    }
+
+    .gallery-row img {
+      height: 200px;
+      width: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      filter: brightness(90%);
+      transition: .3s;
+    }
+
+    .gallery-row img:hover {
+      transform: scale(1.05);
+      filter: brightness(100%) drop-shadow(0 0 15px #e00000);
+    }
+
+    .contact-wrapper {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: stretch;
+    }
+
+    .contact-form {
+      background: rgba(255, 0, 0, 0.08);
+      padding: 30px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,0,0,0.3);
+      backdrop-filter: blur(8px);
+      text-align: left;
+    }
+
+    .contact-form label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #ff4444;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .contact-form button {
+      width: 100%;
+      background: #e00000;
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* MAP TAMBAHAN */
+    #mapid {
+      height: 500px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,0,0,0.3);
+    }
+
+    footer {
+      padding: 40px;
+      text-align: center;
+      background: rgba(0,0,0,0.7);
+      color: #bbb;
+      font-size: 15px;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 900px) {
+      .contact-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .cinematic-section {
+        flex-direction: column;
+        text-align: center;
+      }
+      .cinematic-section img {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#about">About Us</a>
+    <a href="#produk">Produk</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <video autoplay muted loop>
+    <source src="https://cdn.coverr.co/videos/coverr-offroad-car-9959/1080p.mp4" type="video/mp4" />
+  </video>
+  <div class="hero-text">
+    <h1>KEPHOTEC</h1>
+    <p>Modifikasi Otomotif Premium — Lebih Gagah, Lebih Kuat</p>
+    <a class="cta-button" href="https://wa.me/6280000000000" target="_blank">WhatsApp Kami</a>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <h2>Tentang Kephotec</h2>
+  <p>Kephotec adalah brand modifikasi otomotif yang berfokus pada pembuatan bullbar, roofrack, dan aksesoris custom berkualitas tinggi.</p>
+
+  <div class="features-list">
+    <div class="feature-item"><i class="fa-solid fa-shield-halved"></i><span>Kualitas Terjamin</span></div>
+    <div class="feature-item"><i class="fa-solid fa-ruler-combined"></i><span>Rapi dan Presisi</span></div>
+    <div class="feature-item"><i class="fa-solid fa-tags"></i><span>Harga Terjangkau</span></div>
+    <div class="feature-item"><i class="fa-solid fa-rotate-left"></i><span>Garansi Produk</span></div>
+    <div class="feature-item"><i class="fa-solid fa-hammer"></i><span>Pengerjaan Profesional</span></div>
+    <div class="feature-item"><i class="fa-solid fa-truck-fast"></i><span>Pengiriman Cepat</span></div>
+  </div>
+</section>
+
+<section class="cinematic-section" id="produk">
+  <img src="images/Bullbar.jpg" />
+  <div>
+    <h2>Bullbar Custom</h2>
+    <p>Bullbar Kephotec dibuat dari material pilihan yang kuat dan tahan benturan.</p>
+  </div>
+</section>
+
+<section class="cinematic-section">
+  <div>
+    <h2>Roofrack Expedition</h2>
+    <p>Roofrack heavy-duty untuk kebutuhan ekspedisi dan tampil lebih gagah.</p>
+  </div>
+  <img src="images/Roofrack.JPG" />
+</section>
+
+<section class="gallery" id="gallery">
+  <h2>Gallery</h2>
+
+  <div class="gallery-row" id="gallery-main">
+    <img src="images/Toptent-Triton1.jpg" />
+    <img src="images/Toptent-Triton2.jpg" />
+    <img src="images/Bullbar-Fortuner.jpg" />
+    <img src="images/Bullbar-Innova.jpg" />
+  </div>
+
+  <div class="gallery-row" id="gallery-more" style="display:none;">
+    <img src="images/Bullbar-Innova2.jpg" />
+    <img src="images/Toptent-Triton3.jpg" />
+    <img src="images/Roofrack.JPG" />
+    <img src="images/Minimal1.jpg" />
+    <img src="images/Raptor1.jpg" />
+    <img src="images/footstep.jpg" />
+    <img src="images/Threeloops MUX  (2).jpg" />
+    <img src="images/Toptent Hilux (5).jpg" />
+  </div>
+
+  <button id="seeMoreBtn" class="cta-button" style="margin-top:40px; font-size:18px;">
+    See More
+  </button>
+</section>
+
+<section class="contact" id="contact">
+  <h2>Kontak & Lokasi</h2>
+
+  <div class="contact-wrapper">
+
+    <div class="contact-form">
+      <form>
+        <label>Nama</label>
+        <input type="text" placeholder="Nama Anda" required>
+
+        <label>Email</label>
+        <input type="email" placeholder="Email Anda" required>
+
+        <label>Pesan</label>
+        <textarea rows="6" placeholder="Tulis pesan Anda" required></textarea>
+
+        <button type="submit">Kirim Pesan</button>
+      </form>
+    </div>
+
+    <!-- MAP NEW -->
+    <div id="mapid"></div>
+
+  </div>
+
+</section>
+
+<footer>
+  <p>© 2025 Kephotec. All Rights Reserved.</p>
+  <p>Jl. Contoh No. 123, Indonesia | Telepon: 0800-0000-000 | Email: info@kephotec.com</p>
+</footer>
+
+<!-- LEAFLET JS -->
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+<script>
+  // Lokasi Margoluwih, Sleman
+  const lat = -7.7502449;
+  const lon = 110.3005415;
+
+  const map = L.map('mapid').setView([lat, lon], 16);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  const kephotecIcon = L.icon({
+    iconUrl: 'images/logo-kephotec.png', 
+    iconSize: [60, 60],
+    iconAnchor: [30, 60],
+    popupAnchor: [0, -60]
+  });
+
+  L.marker([lat, lon], { icon: kephotecIcon })
+    .addTo(map)
+    .bindPopup("<b>Kephotec</b><br>Margoluwih, Kabupaten Sleman.")
+    .openPopup();
+</script>
+
+<script>
+  const btn = document.getElementById("seeMoreBtn");
+  const moreGallery = document.getElementById("gallery-more");
+
+  btn.addEventListener("click", () => {
+    if (moreGallery.style.display === "none") {
+      moreGallery.style.display = "grid";
+      btn.textContent = "See Less";
+    } else {
+      moreGallery.style.display = "none";
+      btn.textContent = "See More";
+    }
+  });
+</script>
+
+</body>
+</html>
